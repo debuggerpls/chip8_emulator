@@ -7,6 +7,7 @@
 
 namespace chip8 {
 
+  constexpr uint16_t program_start = 0x200;
   constexpr int screen_cols = 64;
   constexpr int screen_lines = 32;
   constexpr char filled_pixel = '#';
@@ -16,17 +17,11 @@ namespace chip8 {
   class Display {
   public:
     Display();
-
     ~Display();
 
-    void drawPixel(int line, int col);
-
-    void deletePixel(int line, int col);
-
-    bool drawSprite(int line, int col, int num_bytes, uint8_t *addr);
-
+    bool drawSprite(int line, int col, int num_bytes, const uint8_t *addr);
+    bool drawByte(int line, int col, uint8_t value);
     void refresh();
-
     void clear();
 
   private:
@@ -43,6 +38,7 @@ namespace chip8 {
     void init();
 
     void print_state();
+    bool loadProgram(const std::string& file, uint16_t addr);
 
     void decode_op(uint8_t op);
 

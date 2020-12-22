@@ -1,5 +1,6 @@
 #include "chip8.h"
 #include "curses.h"
+#include <fstream>
 
 namespace chip8 {
 
@@ -20,6 +21,8 @@ namespace chip8 {
   }
 
   void Chip8::decode_op(uint8_t op) {
+    // TODO: pc increases by 2bytes!
+    // TODO: do vf needs to be reset?
     auto inc_pc = true;
     auto ls_nibble = static_cast<uint8_t>(op & 0xF);
     auto ms_nibble = static_cast<uint8_t>(op >> 12);
@@ -56,19 +59,19 @@ namespace chip8 {
       case 3:
         // SE Vx, byte
         if (vx == ls_byte) {
-          ++pc_;
+          pc_ += 2;
         }
         break;
       case 4:
         // SNE Vx, byte
         if (vx != ls_byte) {
-          ++pc_;
+          pc_ += 2;
         }
         break;
       case 5:
         // SE Vx, Vy
         if (vx == vy) {
-          ++pc_;
+          pc_ += 2;
         }
         break;
       case 6:
@@ -140,7 +143,7 @@ namespace chip8 {
       case 9:
         // SNE Vx, Vy
         if (vx != vy) {
-          ++pc_;
+          pc_ += 2;
         }
         break;
       case 0xA:
@@ -159,8 +162,7 @@ namespace chip8 {
         break;
       case 0xD:
         // DRW Vx, Vy, nibble - Display n-byte sprite starting at memory location I at (Vx, Vy), set VF = collision
-        // TODO: this
-
+        vf() = display.drawSprite(vx, vy, ls_nibble, &ram_[i_]);
         break;
       case 0xE:
         if (ls_byte == 0x9E) {
@@ -226,7 +228,7 @@ namespace chip8 {
     }
 
     if (inc_pc) {
-      ++pc_;
+      pc_ += 2;
     }
 
   }
@@ -361,10 +363,41 @@ namespace chip8 {
     // could use ::clear(), but we update screen from buffer either way
   }
 
-  bool Display::drawSprite(int line, int col, int num_bytes, uint8_t *addr) {
+  bool Display::drawSprite(int line, int col, int num_bytes, const uint8_t *addr) {
     auto collision = false;
+    for (int i = 0; i < num_bytes; ++i) {
+      collision |= drawByte(line + i, col, *(addr + i));
+    }
 
     return collision;
+  }
+
+  bool Display::drawByte(int line, int col, uint8_t value) {
+    auto collision = false;
+    for (int i = 0; i < 8; ++i) {
+      auto b = (value >> i) & 1;
+      auto& ref = screen_[line * screen_cols + col + i];
+      if (ref && b)
+        collision = true;
+      ref ^= b;
+    }
+
+    return collision;
+  }
+
+  bool Chip8::loadProgram(const std::string &file, uint16_t addr) {
+    std::ifstream ifs;
+    ifs.open ("test.txt", std::ifstream::in);
+    if (!ifs.is_open())
+      return false;
+
+    char c = ifs.get();
+    for (int i = 0; ifs.good(); ++i, c = ifs.get()) {
+      ram_[addr + i] = static_cast<uint8_t >(c);
+    }
+    ifs.close();
+
+    return true;
   }
 
 }

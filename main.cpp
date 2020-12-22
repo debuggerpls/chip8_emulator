@@ -5,11 +5,11 @@
 auto quit = false;
 
 void signal_handler(int /*unused*/) {
-
   quit = true;
 }
 
 int main() {
+  using namespace chip8;
   Chip8 chip8;
   //chip8.print_state();
 
@@ -17,11 +17,6 @@ int main() {
   signal(SIGABRT, signal_handler);
   signal(SIGKILL, signal_handler);
 
-  chip8.display.drawPixel(2, 2);
-  chip8.display.drawPixel(0, 2);
-  chip8.display.refresh();
-  chip8.display.deletePixel(0, 2);
-  chip8.display.refresh();
 
   while (!quit) {
 
