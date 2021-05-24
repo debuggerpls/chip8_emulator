@@ -1,11 +1,15 @@
 #ifndef CHIP8_EMULATOR_CHIP8_H
 #define CHIP8_EMULATOR_CHIP8_H
 
+#include "display.h"
+
 #include <atomic>
 #include <cstdint>
 #include <mutex>
 #include <thread>
 
+constexpr int DISPLAY_WIDTH = 64;
+constexpr int DISPLAY_HEIGHT = 32;
 
 struct Stack {
     // NOTE: we trust the application to not overflow
@@ -48,10 +52,13 @@ struct Chip8 {
     Chip8();
     ~Chip8();
 
+    bool init();
     void init_font();
+    void fetch_decode_execute();
+    Instruction fetch();
 
     uint8_t memory[4096]{0};
-    /* Display */
+    display::Display display;
     Stack stack;
     Timer delay_timer;
     Timer sound_timer;
@@ -81,6 +88,7 @@ struct Chip8 {
 
 private:
    std::thread _timer_thread;
+    void decode_execute(Instruction instruction);
 };
 
 void timer_fnc(Chip8 *chip);

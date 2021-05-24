@@ -3,7 +3,8 @@
 #include <cstring>
 #include <chrono>
 
-Chip8::Chip8() : _timer_thread(timer_fnc, this) {
+// TODO: configurable display size
+Chip8::Chip8() : display(DISPLAY_WIDTH, DISPLAY_HEIGHT), _timer_thread(timer_fnc, this)  {
 
 }
 
@@ -15,6 +16,28 @@ Chip8::~Chip8() {
 void Chip8::init_font() {
     int index = 0x50;
     std::memcpy(&memory[index], font, 5 * 16);
+}
+
+void Chip8::fetch_decode_execute() {
+    auto instruction = fetch();
+    decode_execute(instruction);
+}
+
+Instruction Chip8::fetch() {
+    Instruction instruction {memory[PC], memory[PC + 1]};
+    PC += 2;
+    return instruction;
+}
+
+void Chip8::decode_execute(Instruction instruction) {
+
+}
+bool Chip8::init() {
+    if (!display.init())
+        return false;
+
+    init_font();
+    return true;
 }
 
 void Stack::push(uint16_t value) {
