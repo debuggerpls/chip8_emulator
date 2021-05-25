@@ -13,6 +13,7 @@ int main(int argc, char **argv) {
     Chip8 chip;
 //    std::string program(argv[1]);
 //    std::string program("../roms/IBM_Logo.ch8");
+//    std::string program("../roms/BC_test.ch8");
     std::string program("../roms/test_opcode.ch8");
 
     if (!chip.load_program(program)) {

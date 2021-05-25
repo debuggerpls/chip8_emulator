@@ -202,14 +202,14 @@ void Chip8::op_8XYR(Instruction instruction) {
             V[instruction.X()] = V[instruction.Y()] - V[instruction.X()];
             break;
         case 6:
-            V[instruction.X()] = V[instruction.Y()];
+//            V[instruction.X()] = V[instruction.Y()];
             V[0xF] = V[instruction.X()] & 1;
-            V[instruction.X()] = V[instruction.X()] >> 1;
+            V[instruction.X()] >>= 1;
             break;
         case 0xE:
-            V[instruction.X()] = V[instruction.Y()];
-            V[0xF] = V[instruction.X()] & (1 << 15) ? 1 : 0;
-            V[instruction.X()] = V[instruction.X()] << 1;
+//            V[instruction.X()] = V[instruction.Y()];
+            V[0xF] = (V[instruction.X()] >> 7) & 1;
+            V[instruction.X()] <<= 1;
             break;
         default: printf("Unknown instruction: 0x%X\n", instruction.value); break;
     }
@@ -239,7 +239,7 @@ void Chip8::op_EXRR(Instruction instruction) {
     }
 }
 
-// FIXME: add configurable FX55 & FX65 ( now original implemented )
+// FIXME: add configurable FX55 & FX65 ( now modern implemented )
 void Chip8::op_FXRR(Instruction instruction) {
     uint16_t temp = 0;
     switch (instruction.NN()) {
@@ -260,7 +260,7 @@ void Chip8::op_FXRR(Instruction instruction) {
             // get which key was pressed and released and save it in VX (BLOCK)
             break;
         case 0x29: // Font character
-            I = 0x50 + (instruction.X() & 0xf) * 5;
+            I = 0x50 + V[instruction.X()] * 5;
             break;
         case 0x33: // Binary-coded decimal conversion
             memory[I] = V[instruction.X()] / 100;
@@ -269,18 +269,18 @@ void Chip8::op_FXRR(Instruction instruction) {
             break;
         case 0x55: // Store registers to memory
             temp = V[instruction.X()];
-            for (int i = 0; i <= temp && i < 16; ++i) {
-//                memory[I + i] = V[i];
-                memory[I] = V[i];
-                ++I;
+            for (int i = 0; i <= temp && i < 15; ++i) {
+                memory[I + i] = V[i];
+//                memory[I] = V[i];
+//                ++I;
             }
             break;
         case 0x65: // Load registers from memory
             temp = V[instruction.X()];
-            for (int i = 0; i <= temp && i < 16; ++i) {
-//                V[i] = memory[I + i];
-                V[i] = memory[I];
-                ++I;
+            for (int i = 0; i <= temp && i < 15; ++i) {
+                V[i] = memory[I + i];
+//                V[i] = memory[I];
+//                ++I;
             }
             break;
         default: printf("Unknown instruction: 0x%X\n", instruction.value); break;
