@@ -8,8 +8,9 @@
 
 namespace display {
     struct Pixel {
-        void on() { r = g = b = 255; }
-        void off() { r = g = b = 0; }
+        bool is_on() const { return r; }
+        void set_on() { r = g = b = 255; }
+        void set_off() { r = g = b = 0; }
         void toggle() { if (r) r = g = b = 0; else r = g = b = 255; }
 
         uint8_t r {0};

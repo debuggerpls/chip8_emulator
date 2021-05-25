@@ -53,9 +53,8 @@ struct Chip8 {
     ~Chip8();
 
     bool init();
-    void init_font();
+    bool load_program(const std::string &path);
     void fetch_decode_execute();
-    Instruction fetch();
 
     uint8_t memory[4096]{0};
     display::Display display;
@@ -67,28 +66,21 @@ struct Chip8 {
     uint16_t I{0};
 
     /* internal registers */
-    uint8_t V0{0};
-    uint8_t V1{0};
-    uint8_t V2{0};
-    uint8_t V3{0};
-    uint8_t V4{0};
-    uint8_t V5{0};
-    uint8_t V6{0};
-    uint8_t V7{0};
-    uint8_t V8{0};
-    uint8_t V9{0};
-    uint8_t VA{0};
-    uint8_t VB{0};
-    uint8_t VC{0};
-    uint8_t VD{0};
-    uint8_t VE{0};
-    uint8_t VF{0};
-
+    uint8_t V[16] {0};
     std::atomic<int> shutdown{0};
 
 private:
-   std::thread _timer_thread;
+    void init_font();
+    Instruction fetch();
     void decode_execute(Instruction instruction);
+    void op_0RRR(Instruction instruction);
+    void op_1NNN(Instruction instruction);
+    void op_6XNN(Instruction instruction);
+    void op_7XNN(Instruction instruction);
+    void op_ANNN(Instruction instruction);
+    void op_DXYN(Instruction instruction);
+
+    std::thread _timer_thread;
 };
 
 void timer_fnc(Chip8 *chip);

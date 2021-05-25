@@ -11,7 +11,6 @@ bool display::Display::init() {
 
     // TODO: configurable pixel size
     screen.window = SDL_CreateWindow("CHIP8 interpreter", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width * 10, height * 10, SDL_WINDOW_SHOWN);
-
     if (!screen.window) {
         return false;
     }
