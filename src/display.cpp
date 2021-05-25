@@ -42,6 +42,7 @@ void display::Display::draw() {
 
 void display::Display::clear() {
     std::memset(&pixels[0], 0, pixels.size() * sizeof(Pixel));
+    // TODO: replace draw() with clearing of renderer to save the copy
     draw();
 }
 

@@ -12,7 +12,8 @@ int main(int argc, char **argv) {
 
     Chip8 chip;
 //    std::string program(argv[1]);
-    std::string program("../roms/IBM_Logo.ch8");
+//    std::string program("../roms/IBM_Logo.ch8");
+    std::string program("../roms/test_opcode.ch8");
 
     if (!chip.load_program(program)) {
         printf("Failed to load program: %s\n", program.c_str());
@@ -26,8 +27,10 @@ int main(int argc, char **argv) {
 
     while (!chip.shutdown) {
         chip.fetch_decode_execute();
-        SDL_Delay(500);
+        SDL_Delay(2); // 700 instructions should be 1,42 ms
     }
+
+    SDL_Delay(5000);
 
 
     return 0;

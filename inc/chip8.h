@@ -81,6 +81,16 @@ private:
     void op_DXYN(Instruction instruction);
 
     std::thread _timer_thread;
+    void op_2NNN(Instruction instruction);
+    void op_3XNN(Instruction instruction);
+    void op_4XNN(Instruction instruction);
+    void op_5XY0(Instruction instruction);
+    void op_9XY0(Instruction instruction);
+    void op_8XYR(Instruction instruction);
+    void op_BNNN(Instruction instruction);
+    void op_CXNN(Instruction instruction);
+    void op_EXRR(Instruction instruction);
+    void op_FXRR(Instruction instruction);
 };
 
 void timer_fnc(Chip8 *chip);
