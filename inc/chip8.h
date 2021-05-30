@@ -11,6 +11,25 @@
 constexpr int DISPLAY_WIDTH = 64;
 constexpr int DISPLAY_HEIGHT = 32;
 
+constexpr SDL_Scancode scancodes[] = {
+        SDL_SCANCODE_X,
+        SDL_SCANCODE_1,
+        SDL_SCANCODE_2,
+        SDL_SCANCODE_3,
+        SDL_SCANCODE_Q,
+        SDL_SCANCODE_W,
+        SDL_SCANCODE_E,
+        SDL_SCANCODE_A,
+        SDL_SCANCODE_S,
+        SDL_SCANCODE_D,
+        SDL_SCANCODE_Z,
+        SDL_SCANCODE_C,
+        SDL_SCANCODE_4,
+        SDL_SCANCODE_R,
+        SDL_SCANCODE_F,
+        SDL_SCANCODE_V
+};
+
 struct Stack {
     // NOTE: we trust the application to not overflow
     void push(uint16_t value);
@@ -66,7 +85,7 @@ struct Chip8 {
     uint16_t I{0};
 
     /* internal registers */
-    uint8_t V[16] {0};
+    uint8_t V[16]{0};
     std::atomic<int> shutdown{0};
 
 private:

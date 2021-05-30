@@ -1,6 +1,7 @@
 #include "chip8.h"
 
 #include <cstdio>
+#include <unistd.h>
 
 
 int main(int argc, char **argv) {
@@ -14,7 +15,7 @@ int main(int argc, char **argv) {
 //    std::string program(argv[1]);
 //    std::string program("../roms/IBM_Logo.ch8");
 //    std::string program("../roms/BC_test.ch8");
-    std::string program("../roms/test_opcode.ch8");
+    std::string program("../roms/SCTEST");
 
     if (!chip.load_program(program)) {
         printf("Failed to load program: %s\n", program.c_str());
@@ -28,7 +29,8 @@ int main(int argc, char **argv) {
 
     while (!chip.shutdown) {
         chip.fetch_decode_execute();
-        SDL_Delay(2); // 700 instructions should be 1,42 ms
+//        SDL_Delay(2); // 700 instructions should be 1,42 ms
+        usleep(1400);
     }
 
     SDL_Delay(5000);

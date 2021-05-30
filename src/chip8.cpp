@@ -228,12 +228,19 @@ void Chip8::op_CXNN(Instruction instruction) {
 
 void Chip8::op_EXRR(Instruction instruction) {
     /* Skip if key */
+    const Uint8 *state = SDL_GetKeyboardState(nullptr);
     switch (instruction.NN()) {
         case 0x9E:
             // if key in VX(0-F) is pressed, inc PC by 2
+            if (state[scancodes[V[instruction.X()]]]) {
+                PC += 2;
+            }
             break;
         case 0xA1:
             // if key in VX(0-F) is not pressed, inc PC by 2
+            if (!state[scancodes[V[instruction.X()]]]) {
+                PC += 2;
+            }
             break;
         default: printf("Unknown instruction: 0x%X\n", instruction.value); break;
     }
@@ -279,8 +286,8 @@ void Chip8::op_FXRR(Instruction instruction) {
             temp = V[instruction.X()];
             for (int i = 0; i <= temp && i < 15; ++i) {
                 V[i] = memory[I + i];
-//                V[i] = memory[I];
-//                ++I;
+//               V[i] = memory[I];
+//               ++I;
             }
             break;
         default: printf("Unknown instruction: 0x%X\n", instruction.value); break;
